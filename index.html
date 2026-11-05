@@ -1,0 +1,223 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZyroHub | MM2 Marketplace</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090810;color:#fff;font-family:Arial,sans-serif}
+header{height:75px;border-bottom:1px solid #292033;display:flex;align-items:center;justify-content:space-between;padding:0 7%;background:#0d0b15}
+.logo{font-size:27px;font-weight:900;color:#c39aff}
+.logo span{color:white}
+nav{display:flex;gap:25px}
+nav a{color:#aaa;text-decoration:none;cursor:pointer}
+nav a:hover{color:#c39aff}
+button{cursor:pointer;border:0;border-radius:9px;padding:12px 20px;background:#9655e9;color:white;font-weight:bold}
+button:hover{background:#ae78f5}
+.hero{text-align:center;padding:85px 20px 65px;background:radial-gradient(ellipse at top,#392052 0%,#100d19 55%,#090810 100%)}
+.hero h1{font-size:55px;margin:10px 0;color:#fff}
+.hero h1 span{color:#c18cff}
+.hero p{color:#aaa;font-size:16px}
+.container{max-width:1150px;margin:40px auto;padding:0 20px}
+.panel{background:#13111c;border:1px solid #30263c;border-radius:15px;padding:22px;margin-bottom:25px}
+h2{margin-top:0}
+input{background:#090810;color:white;border:1px solid #40334e;padding:13px;border-radius:9px;width:100%;outline:none}
+input:focus{border-color:#b27af3}
+.row{display:flex;gap:12px}
+.row input{flex:1}
+.filters{display:flex;gap:9px;flex-wrap:wrap;margin:20px 0}
+.filters button{background:#211a2c;color:#c7b3dc}
+.filters button.active{background:#9251df;color:white}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:15px}
+.item{background:#171421;border:1px solid #33283e;border-radius:13px;padding:17px;text-align:center}
+.item:hover{border-color:#ad75ee;transform:translateY(-3px)}
+.item .emoji{font-size:43px;margin:12px}
+.item h3{margin:8px 0}
+.item p{color:#bca1dc}
+.item button{width:100%;margin-top:8px}
+.price{color:#c99bff;font-weight:bold}
+.cart-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #30263c;gap:10px}
+.cart-row button{padding:7px 12px;background:#542c42}
+.total{font-size:25px;color:#c99bff;font-weight:bold}
+.section{display:none}
+.section.active{display:block}
+.notice{font-size:12px;color:#999;line-height:1.7}
+footer{text-align:center;padding:35px;color:#777;border-top:1px solid #30263c}
+@media(max-width:650px){
+ header{padding:0 15px}nav{gap:10px;font-size:12px}
+ .hero h1{font-size:38px}.row{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<header>
+ <div class="logo">ZYRO<span>HUB</span></div>
+ <nav>
+  <a onclick="show('market')">Market</a>
+  <a onclick="show('cart')">Sepet</a>
+  <a onclick="show('profile')">Profil</a>
+  <a onclick="show('messages')">DM</a>
+ </nav>
+</header>
+
+<div class="hero">
+ <h1>TRADE SMARTER.<br><span>TRADE WITH ZYRO.</span></h1>
+ <p>MM2 Item Marketplace • Premium Trading Experience</p>
+ <button onclick="show('market')">MARKETİ KEŞFET →</button>
+</div>
+
+<div class="container">
+
+<section id="profile" class="section active">
+ <div class="panel">
+  <h2>👤 Roblox Profilin</h2>
+  <p class="notice">Roblox kullanıcı adını girerek profilini oluştur. Şifre istenmez.</p>
+  <div class="row">
+   <input id="username" placeholder="Roblox kullanıcı adın">
+   <button onclick="login()">Giriş Yap</button>
+  </div>
+  <p id="welcome" class="price"></p>
+ </div>
+</section>
+
+<section id="market" class="section">
+ <div class="panel">
+  <h2>💎 MM2 Marketplace</h2>
+  <p class="notice">İstediğin eşyaları seç ve sepetine ekle.</p>
+  <input id="search" placeholder="Eşya ara..." oninput="render()">
+  <div class="filters" id="filters"></div>
+  <div class="grid" id="items"></div>
+ </div>
+</section>
+
+<section id="cart" class="section">
+ <div class="panel">
+  <h2>🛒 Sepetim</h2>
+  <div id="cartItems"></div>
+  <p>Baz fiyat toplamı: <span id="base">0</span> Robux</p>
+  <p>Fiyat çarpanı: ×1.5</p>
+  <p class="total">Toplam: <span id="total">0</span> Robux</p>
+  <button onclick="submitOrder()">TALEBİ TAMAMLA</button>
+  <p class="notice">Bu işlem gerçek ödeme veya otomatik eşya transferi yapmaz. Yalnızca talep oluşturur.</p>
+ </div>
+</section>
+
+<section id="messages" class="section">
+ <div class="panel">
+  <h2>💬 ZyroHub DM</h2>
+  <p class="notice">Mesajlaşma arayüzü demo sürümündedir. Gerçek zamanlı mesajlar için sunucu ve veritabanı gerekir.</p>
+  <input id="dmUser" placeholder="Mesaj göndereceğin Roblox kullanıcı adı">
+  <div id="chat" style="height:180px;overflow:auto;padding:15px;color:#c5a8e6"></div>
+  <div class="row">
+   <input id="message" placeholder="Mesajını yaz...">
+   <button onclick="sendMessage()">Gönder</button>
+  </div>
+ </div>
+</section>
+
+<section id="admin" class="section">
+ <div class="panel">
+  <h2>👑 Admin Paneli</h2>
+  <p class="notice">Demo sipariş listesi. Gerçek admin yetkilendirmesi sunucu tarafında kurulmalıdır.</p>
+  <div id="orders"></div>
+ </div>
+</section>
+
+</div>
+
+<footer>
+ <div class="logo">ZYROHUB</div>
+ <p>MM2 Trading Community</p>
+ <p class="notice">Unofficial fan-made marketplace. Not affiliated with Roblox or Murder Mystery 2.</p>
+</footer>
+
+<script>
+const catalog=[
+["Seer","Godly",100],["Chroma Seer","Chroma",500],
+["Eternal","Godly",150],["Chroma Luger","Chroma",900],
+["Elderwood Scythe","Godly",350],["Harvester","Godly",1200],
+["Icebreaker","Ancient",700],["Icewing","Ancient",250],
+["Candleflame","Godly",450],["Darkbringer","Godly",300],
+["Lightbringer","Godly",300],["Amerilaser","Godly",180],
+["Laser","Godly",200],["Slasher","Godly",190],
+["Pixel","Godly",150],["Virtual","Godly",220],
+["Gingerblade","Godly",130],["Fang","Godly",180],
+["Blue Seer","Vintage",100],["Ghost","Vintage",90],
+["Blood","Vintage",110],["Phaser","Vintage",100],
+["JD","Godly",500],["Candy","Godly",600],
+["Sugar","Godly",600],["Pumpking","Godly",250],
+["Red Luger","Godly",400],["Golden","Vintage",120],
+["Deathshard","Godly",200],["Batwing","Ancient",500],
+["Logchopper","Godly",300],["Iceblaster","Godly",350]
+];
+const categories=["Tümü","Godly","Ancient","Chroma","Vintage","Legendary","Rare","Uncommon","Common","Pets"];
+let category="Tümü",cart=[],orders=[];
+function show(id){
+ document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ if(id==="cart")updateCart();
+ if(id==="admin")renderOrders();
+}
+function login(){
+ let u=document.getElementById("username").value.trim();
+ if(!u)return alert("Roblox kullanıcı adını gir!");
+ localStorage.setItem("zyrohub_user",u);
+ document.getElementById("welcome").textContent="Hoş geldin, "+u+"!";
+}
+function render(){
+ let q=document.getElementById("search").value.toLowerCase();
+ document.getElementById("filters").innerHTML=categories.map(c=>
+ `<button class="${c===category?'active':''}" onclick="category='${c}';render()">${c}</button>`).join("");
+ let list=catalog.filter(x=>(category==="Tümü"||x[1]===category)&&x[0].toLowerCase().includes(q));
+ document.getElementById("items").innerHTML=list.map(x=>
+ `<div class="item"><div class="emoji">💎</div><h3>${x[0]}</h3><p>${x[1]}</p><div class="price">${x[2]} Robux</div><button onclick="add('${x[0]}')">+ Sepete Ekle</button></div>`).join("");
+}
+function add(name){
+ let x=catalog.find(i=>i[0]===name);
+ cart.push({name:x[0],price:x[2]});
+ updateCart();
+ alert(name+" sepete eklendi!");
+}
+function updateCart(){
+ document.getElementById("cartItems").innerHTML=cart.length?cart.map((x,i)=>
+ `<div class="cart-row"><span>${x.name} — ${x.price} R$</span><button onclick="removeItem(${i})">Sil</button></div>`).join(""):"Sepetin boş.";
+ let base=cart.reduce((a,b)=>a+b.price,0);
+ document.getElementById("base").textContent=base;
+ document.getElementById("total").textContent=Math.ceil(base*1.5);
+}
+function removeItem(i){cart.splice(i,1);updateCart()}
+function submitOrder(){
+ let user=localStorage.getItem("zyrohub_user");
+ if(!user)return alert("Önce profil bölümünden kullanıcı adını gir.");
+ if(!cart.length)return alert("Sepetin boş!");
+ let order={user,items:[...cart],total:Math.ceil(cart.reduce((a,b)=>a+b.price,0)*1.5),date:new Date().toLocaleString("tr-TR")};
+ orders=JSON.parse(localStorage.getItem("zyrohub_orders")||"[]");
+ orders.push(order);
+ localStorage.setItem("zyrohub_orders",JSON.stringify(orders));
+ cart=[];
+ updateCart();
+ alert("Talebin oluşturuldu! Admin incelemesi bekleniyor.");
+}
+function renderOrders(){
+ orders=JSON.parse(localStorage.getItem("zyrohub_orders")||"[]");
+ document.getElementById("orders").innerHTML=orders.length?orders.map(o=>
+ `<div class="panel"><b>${o.user}</b><p>${o.items.map(i=>i.name).join(", ")}</p><p>${o.total} Robux</p><small>${o.date}</small></div>`).join(""):"Henüz talep yok.";
+}
+function sendMessage(){
+ let u=document.getElementById("dmUser").value.trim();
+ let m=document.getElementById("message").value.trim();
+ if(!u||!m)return alert("Kullanıcı ve mesaj gerekli.");
+ let chat=document.getElementById("chat");
+ chat.innerHTML+=`<p><b>${u}:</b> ${m}</p>`;
+ document.getElementById("message").value="";
+}
+render();
+let saved=localStorage.getItem("zyrohub_user");
+if(saved){document.getElementById("username").value=saved;document.getElementById("welcome").textContent="Hoş geldin, "+saved+"!"}
+show("profile");
+</script>
+</body>
+</html>
