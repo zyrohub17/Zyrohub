@@ -1,6 +1,13 @@
 
 <!DOCTYPE html>
 <html lang="tr">
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+ <script>
+const supabaseClient = window.supabase.createClient(
+  "https://odjuwimoctaxpqauonau.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kanV3aW1vY3RheHBxYXVvbmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM5MDMwNTYsImV4cCI6MjEwOTQ3OTA1Nn0.WMb50Y0814dnTfOulaaNT-uzLvjZqB6JGN6Md35UaFk"
+);
+</script>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -161,11 +168,9 @@ function show(id){
  if(id==="cart")updateCart();
  if(id==="admin")renderOrders();
 }
-function login(){
- let u=document.getElementById("username").value.trim();
- if(!u)return alert("Roblox kullanıcı adını gir!");
- localStorage.setItem("zyrohub_user",u);
- document.getElementById("welcome").textContent="Hoş geldin, "+u+"!";
+function login() {
+  window.location.href =
+    "https://odjuwimoctaxpqauonau.supabase.co/functions/v1/smooth-service?action=login";
 }
 function render(){
  let q=document.getElementById("search").value.toLowerCase();
@@ -218,6 +223,34 @@ render();
 let saved=localStorage.getItem("zyrohub_user");
 if(saved){document.getElementById("username").value=saved;document.getElementById("welcome").textContent="Hoş geldin, "+saved+"!"}
 show("profile");
+</script>
+ <script>
+(async function () {
+  const params = new URLSearchParams(window.location.search);
+  const tokenHash = params.get("token_hash");
+  const type = params.get("type");
+
+  if (tokenHash && type) {
+    const { error } = await supabaseClient.auth.verifyOtp({
+      token_hash: tokenHash,
+      type: type
+    });
+
+    if (error) {
+      alert("Giriş tamamlanamadı. Tekrar Roblox ile giriş yap.");
+      return;
+    }
+
+    window.history.replaceState({}, "", "/");
+
+    const { data } = await supabaseClient.auth.getUser();
+
+    if (data.user) {
+      document.getElementById("welcome").textContent =
+        "Hoş geldin, Roblox hesabınla giriş yaptın!";
+    }
+  }
+})();
 </script>
 </body>
 </html>
